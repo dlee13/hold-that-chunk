@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "holdthatchunk",
+  "version": "${version}",
+  "name": "Hold That Chunk",
+  "description": "Delays client chunk unloading",
+  "authors": [
+    "dlee13"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/hold-that-chunk",
+    "sources": "https://github.com/dlee13/hold-that-chunk",
+    "issues": "https://github.com/dlee13/hold-that-chunk/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/holdthatchunk/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "xyz.holocons.mc.holdthatchunk.HoldThatChunkMod"
+    ]
+  },
+  "mixins": [
+    "holdthatchunk.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.8",
+    "fabric": "*",
+    "minecraft": ">=1.19.1",
+    "java": ">=17"
+  }
+}

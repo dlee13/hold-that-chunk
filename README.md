@@ -1,0 +1,3 @@
+When the client receives a chunk unload packet, it will schedule the packet to be handled a configurable amount of time later. This is particularly useful for participating in ice boat racing or elytra course racing on highly active multiplayer servers where servers may struggle to keep up with sending chunk updates to all of the players.
+
+The player may revisit the chunks that have remained in memory without waiting for the server to resend them. This strategy of delaying chunk unloads rather than outright canceling them means that they will eventually get cleaned up. Thus, the client is less likely to run into high memory usage issues.

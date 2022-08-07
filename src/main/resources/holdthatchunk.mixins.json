@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "xyz.holocons.mc.holdthatchunk.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ClientboundForgetLevelChunkPacketMixin",
+    "ClientboundLevelChunkWithLightPacketMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

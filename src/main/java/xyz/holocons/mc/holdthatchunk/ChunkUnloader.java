@@ -3,7 +3,7 @@ package xyz.holocons.mc.holdthatchunk;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 
@@ -11,15 +11,12 @@ public class ChunkUnloader {
 
     private class DelayedChunkUnload {
 
-        private final ClientGamePacketListener listener;
         private final ClientboundForgetLevelChunkPacket packet;
         private final long expiration;
         private boolean canceled;
         private DelayedChunkUnload next;
 
-        public DelayedChunkUnload(ClientGamePacketListener listener, ClientboundForgetLevelChunkPacket packet,
-                long expiration) {
-            this.listener = listener;
+        public DelayedChunkUnload(ClientboundForgetLevelChunkPacket packet, int expiration) {
             this.packet = packet;
             this.expiration = expiration;
             this.canceled = false;
@@ -30,13 +27,11 @@ public class ChunkUnloader {
     private final Long2ObjectOpenHashMap<DelayedChunkUnload> chunkUnloadMap;
     private DelayedChunkUnload first;
     private DelayedChunkUnload last;
-    private long tick;
+    private int tick;
+    private ClientPacketListener listener;
 
     public ChunkUnloader() {
         this.chunkUnloadMap = new Long2ObjectOpenHashMap<>();
-        this.first = null;
-        this.last = null;
-        this.tick = -1;
         ClientTickEvents.END_WORLD_TICK.register(this::onEndTick);
     }
 
@@ -51,8 +46,8 @@ public class ChunkUnloader {
         }
     }
 
-    public void onChunkUnload(ClientGamePacketListener listener, ClientboundForgetLevelChunkPacket packet) {
-        final var newChunkUnload = new DelayedChunkUnload(listener, packet, tick + HoldThatChunkMod.CONFIG.delay);
+    public void onChunkUnload(ClientboundForgetLevelChunkPacket packet) {
+        final var newChunkUnload = new DelayedChunkUnload(packet, tick + HoldThatChunkMod.CONFIG.delay);
         final var oldChunkUnload = chunkUnloadMap.put(chunkKey(packet.getX(), packet.getZ()), newChunkUnload);
         if (oldChunkUnload != null) {
             oldChunkUnload.canceled = true;
@@ -72,8 +67,15 @@ public class ChunkUnloader {
             return;
         }
         if (!first.canceled) {
-            first.listener.handleForgetLevelChunk(first.packet);
+            listener.handleForgetLevelChunk(first.packet);
         }
         first = first.next;
+    }
+
+    public void onJoinWorld(ClientPacketListener listener) {
+        chunkUnloadMap.clear();
+        first = null;
+        tick = -1;
+        this.listener = listener;
     }
 }

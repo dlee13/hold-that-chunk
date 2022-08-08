@@ -18,12 +18,12 @@ public class Configuration {
 
    public int delay = 12000;
 
-   public void deserialize(JsonObject data) {
-      if (data == null) {
+   public void deserialize(JsonObject jsonObject) {
+      if (jsonObject == null) {
          HoldThatChunkMod.LOGGER.error("Config was empty");
       } else {
          try {
-            delay = data.get("chunkUnloadDelayInTicks").getAsInt();
+            delay = Math.min(jsonObject.get("chunkUnloadDelayInTicks").getAsInt(), 20 * 60 * 60 * 24);
          } catch (Exception e) {
             HoldThatChunkMod.LOGGER.error("Could not parse config", e);
          }
@@ -31,9 +31,9 @@ public class Configuration {
    }
 
    public JsonObject serialize() {
-      JsonObject root = new JsonObject();
-      root.addProperty("chunkUnloadDelayInTicks", delay);
-      return root;
+      final var jsonObject = new JsonObject();
+      jsonObject.addProperty("chunkUnloadDelayInTicks", delay);
+      return jsonObject;
    }
 
    public void load() {

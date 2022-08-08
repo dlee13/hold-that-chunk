@@ -13,6 +13,6 @@ public class ClientboundForgetLevelChunkPacketMixin {
 
     @Redirect(method = "handle", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/game/ClientGamePacketListener;handleForgetLevelChunk(Lnet/minecraft/network/protocol/game/ClientboundForgetLevelChunkPacket;)V"))
     private void scheduleChunkUnload(ClientGamePacketListener listener, ClientboundForgetLevelChunkPacket packet) {
-        HoldThatChunkMod.UNLOADER.onChunkUnload(listener, packet);
+        HoldThatChunkMod.UNLOADER.onChunkUnload(packet);
     }
 }

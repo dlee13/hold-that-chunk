@@ -12,8 +12,8 @@ import xyz.holocons.mc.holdthatchunk.HoldThatChunkMod;
 @Mixin(ClientboundLevelChunkWithLightPacket.class)
 public class ClientboundLevelChunkWithLightPacketMixin {
 
-   @Inject(method = "handle", at = @At("HEAD"))
-   private void cancelChunkUnload(ClientGamePacketListener listener, CallbackInfo info) {
-      HoldThatChunkMod.UNLOADER.onChunkLoad((ClientboundLevelChunkWithLightPacket) (Object) this);
-   }
+    @Inject(method = "handle", at = @At("HEAD"))
+    private void cancelChunkUnload(ClientGamePacketListener listener, CallbackInfo info) {
+        HoldThatChunkMod.UNLOADER.onChunkLoad((ClientboundLevelChunkWithLightPacket) (Object) this);
+    }
 }

@@ -12,7 +12,7 @@ public class ChunkUnloader {
     private class DelayedChunkUnload {
 
         private final ClientboundForgetLevelChunkPacket packet;
-        private final long expiration;
+        private final int expiration;
         private boolean canceled;
         private DelayedChunkUnload next;
 

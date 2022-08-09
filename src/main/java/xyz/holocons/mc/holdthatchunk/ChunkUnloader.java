@@ -1,11 +1,14 @@
 package xyz.holocons.mc.holdthatchunk;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 public class ChunkUnloader {
 
@@ -32,18 +35,13 @@ public class ChunkUnloader {
 
     public ChunkUnloader() {
         this.chunkUnloadMap = new Long2ObjectOpenHashMap<>();
+        ClientChunkEvents.CHUNK_LOAD.register(this::onChunkLoad);
         ClientTickEvents.END_WORLD_TICK.register(this::onEndTick);
+        ClientPlayConnectionEvents.INIT.register(this::onPlayInit);
     }
 
     public static long chunkKey(int x, int z) {
         return (long) x & 0xFFFFFFFFL | ((long) z & 0xFFFFFFFFL) << 32;
-    }
-
-    public void onChunkLoad(ClientboundLevelChunkWithLightPacket packet) {
-        final var oldChunkUnload = chunkUnloadMap.remove(chunkKey(packet.getX(), packet.getZ()));
-        if (oldChunkUnload != null) {
-            oldChunkUnload.canceled = true;
-        }
     }
 
     public void onChunkUnload(ClientboundForgetLevelChunkPacket packet) {
@@ -61,6 +59,13 @@ public class ChunkUnloader {
         }
     }
 
+    private void onChunkLoad(ClientLevel world, LevelChunk chunk) {
+        final var oldChunkUnload = chunkUnloadMap.remove(chunkKey(chunk.getPos().x, chunk.getPos().z));
+        if (oldChunkUnload != null) {
+            oldChunkUnload.canceled = true;
+        }
+    }
+
     private void onEndTick(ClientLevel world) {
         tick++;
         if (first == null || tick < first.expiration) {
@@ -72,10 +77,10 @@ public class ChunkUnloader {
         first = first.next;
     }
 
-    public void onJoinWorld(ClientPacketListener listener) {
+    private void onPlayInit(ClientPacketListener handler, Minecraft client) {
         chunkUnloadMap.clear();
         first = null;
         tick = -1;
-        this.listener = listener;
+        listener = handler;
     }
 }

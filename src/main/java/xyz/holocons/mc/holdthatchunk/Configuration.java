@@ -16,7 +16,7 @@ public class Configuration {
          .resolve("holdthatchunk.json");
    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-   public int delay = 12000;
+   public int delay = 20 * 60 * 60;
 
    public void deserialize(JsonObject jsonObject) {
       if (jsonObject == null) {

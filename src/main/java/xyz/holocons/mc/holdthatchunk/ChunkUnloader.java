@@ -32,6 +32,7 @@ public class ChunkUnloader {
     private DelayedChunkUnload last;
     private int tick;
     private ClientPacketListener listener;
+    private Minecraft minecraft;
 
     public ChunkUnloader() {
         this.chunkUnloadMap = new Long2ObjectOpenHashMap<>();
@@ -40,23 +41,26 @@ public class ChunkUnloader {
         ClientPlayConnectionEvents.INIT.register(this::onPlayInit);
     }
 
-    public static long chunkKey(int x, int z) {
+    private static long chunkKey(int x, int z) {
         return (long) x & 0xFFFFFFFFL | ((long) z & 0xFFFFFFFFL) << 32;
     }
 
     public void onChunkUnload(ClientboundForgetLevelChunkPacket packet) {
-        final var newChunkUnload = new DelayedChunkUnload(packet, tick + HoldThatChunkMod.CONFIG.delay);
-        final var oldChunkUnload = chunkUnloadMap.put(chunkKey(packet.getX(), packet.getZ()), newChunkUnload);
-        if (oldChunkUnload != null) {
-            oldChunkUnload.canceled = true;
-        }
-        if (first == null) {
-            first = newChunkUnload;
-            last = first;
-        } else {
-            last.next = newChunkUnload;
-            last = last.next;
-        }
+        // Called from Netty thread
+        minecraft.execute(() -> {
+            final var newChunkUnload = new DelayedChunkUnload(packet, tick + HoldThatChunkMod.CONFIG.delay);
+            final var oldChunkUnload = chunkUnloadMap.put(chunkKey(packet.getX(), packet.getZ()), newChunkUnload);
+            if (oldChunkUnload != null) {
+                oldChunkUnload.canceled = true;
+            }
+            if (first == null) {
+                first = newChunkUnload;
+                last = first;
+            } else {
+                last.next = newChunkUnload;
+                last = last.next;
+            }
+        });
     }
 
     private void onChunkLoad(ClientLevel world, LevelChunk chunk) {
@@ -78,9 +82,13 @@ public class ChunkUnloader {
     }
 
     private void onPlayInit(ClientPacketListener handler, Minecraft client) {
-        chunkUnloadMap.clear();
-        first = null;
-        tick = -1;
-        listener = handler;
+        // Called from Netty thread
+        client.executeBlocking(() -> {
+            chunkUnloadMap.clear();
+            first = null;
+            tick = -1;
+            listener = handler;
+            minecraft = client;
+        });
     }
 }

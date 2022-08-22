@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket;
 import xyz.holocons.mc.holdthatchunk.HoldThatChunkMod;
 
 @Mixin(ClientboundForgetLevelChunkPacket.class)
-public class ClientboundForgetLevelChunkPacketMixin {
+abstract class ClientboundForgetLevelChunkPacketMixin {
 
     @Redirect(method = "handle", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/game/ClientGamePacketListener;handleForgetLevelChunk(Lnet/minecraft/network/protocol/game/ClientboundForgetLevelChunkPacket;)V"))
     private void scheduleChunkUnload(ClientGamePacketListener listener, ClientboundForgetLevelChunkPacket packet) {

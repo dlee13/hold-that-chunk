@@ -48,7 +48,7 @@ public class ChunkUnloader {
     public void onChunkUnload(ClientboundForgetLevelChunkPacket packet) {
         // Called from Netty thread
         minecraft.execute(() -> {
-            final var newChunkUnload = new DelayedChunkUnload(packet, tick + HoldThatChunkMod.CONFIG.delay);
+            final var newChunkUnload = new DelayedChunkUnload(packet, tick + HoldThatChunkMod.CONFIG.chunkUnloadDelay);
             final var oldChunkUnload = chunkUnloadMap.put(chunkKey(packet.getX(), packet.getZ()), newChunkUnload);
             if (oldChunkUnload != null) {
                 oldChunkUnload.canceled = true;

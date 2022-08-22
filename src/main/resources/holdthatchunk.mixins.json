@@ -4,7 +4,8 @@
   "package": "xyz.holocons.mc.holdthatchunk.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ClientboundForgetLevelChunkPacketMixin"
+    "ClientboundForgetLevelChunkPacketMixin",
+    "ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

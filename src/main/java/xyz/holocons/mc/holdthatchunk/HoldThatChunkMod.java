@@ -7,12 +7,12 @@ import net.fabricmc.api.ClientModInitializer;
 
 public final class HoldThatChunkMod implements ClientModInitializer {
 
-   public static final Logger LOGGER = LogManager.getLogger();
-   public static final Configuration CONFIG = new Configuration();
-   public static final ChunkUnloader UNLOADER = new ChunkUnloader();
+    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Configuration CONFIG = new Configuration();
+    public static final ChunkUnloader UNLOADER = new ChunkUnloader();
 
-   @Override
-   public void onInitializeClient() {
-      CONFIG.load();
-   }
+    @Override
+    public void onInitializeClient() {
+        CONFIG.load();
+    }
 }

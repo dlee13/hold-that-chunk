@@ -25,9 +25,13 @@ public class Configuration {
         } else {
             try {
                 chunkUnloadDelay = Math.min(jsonObject.get("chunkUnloadDelayInTicks").getAsInt(), 20 * 60 * 60 * 24);
+            } catch (Exception e) {
+                HoldThatChunkMod.LOGGER.error("Could not parse chunkUnloadDelayInTicks option", e);
+            }
+            try {
                 ignoreServerRenderDistance = jsonObject.get("ignoreServerRenderDistance").getAsBoolean();
             } catch (Exception e) {
-                HoldThatChunkMod.LOGGER.error("Could not parse config", e);
+                HoldThatChunkMod.LOGGER.error("Could not parse ignoreServerRenderDistance option", e);
             }
         }
     }

@@ -13,7 +13,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class Configuration {
 
     private static final Path configPath = FabricLoader.getInstance().getConfigDir().normalize()
-            .resolve("holdthatchunk.json");
+            .resolve(HoldThatChunkMod.MOD_ID + ".json");
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public int chunkUnloadDelay = 20 * 60 * 60;
@@ -21,17 +21,19 @@ public class Configuration {
 
     public void deserialize(JsonObject jsonObject) {
         if (jsonObject == null) {
-            HoldThatChunkMod.LOGGER.error("Config was empty");
+            HoldThatChunkMod.LOGGER.warn("[{}] Config was empty", HoldThatChunkMod.MOD_ID);
         } else {
             try {
                 chunkUnloadDelay = Math.min(jsonObject.get("chunkUnloadDelayInTicks").getAsInt(), 20 * 60 * 60 * 24);
             } catch (Exception e) {
-                HoldThatChunkMod.LOGGER.error("Could not parse chunkUnloadDelayInTicks option", e);
+                HoldThatChunkMod.LOGGER.warn("[{}] Could not parse chunkUnloadDelayInTicks option",
+                        HoldThatChunkMod.MOD_ID);
             }
             try {
                 ignoreServerRenderDistance = jsonObject.get("ignoreServerRenderDistance").getAsBoolean();
             } catch (Exception e) {
-                HoldThatChunkMod.LOGGER.error("Could not parse ignoreServerRenderDistance option", e);
+                HoldThatChunkMod.LOGGER.warn("[{}] Could not parse ignoreServerRenderDistance option",
+                        HoldThatChunkMod.MOD_ID);
             }
         }
     }
@@ -51,7 +53,7 @@ public class Configuration {
             try (final var reader = Files.newBufferedReader(configPath)) {
                 deserialize(gson.fromJson(reader, JsonObject.class));
             } catch (IOException e) {
-                HoldThatChunkMod.LOGGER.error("Could not read config", e);
+                HoldThatChunkMod.LOGGER.error("[{}] Could not read config", HoldThatChunkMod.MOD_ID, e);
             }
         }
     }
@@ -60,7 +62,7 @@ public class Configuration {
         try (final var writer = Files.newBufferedWriter(configPath)) {
             gson.toJson(serialize(), JsonObject.class, writer);
         } catch (IOException e) {
-            HoldThatChunkMod.LOGGER.error("Could not write config", e);
+            HoldThatChunkMod.LOGGER.error("[{}] Could not write config", HoldThatChunkMod.MOD_ID, e);
         }
     }
 }

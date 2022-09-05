@@ -76,6 +76,7 @@ public class ChunkUnloader {
             return;
         }
         if (!first.canceled) {
+            chunkUnloadMap.remove(chunkKey(first.packet.getX(), first.packet.getZ()));
             listener.handleForgetLevelChunk(first.packet);
         }
         first = first.next;

@@ -16,7 +16,7 @@ public class Configuration {
             .resolve(HoldThatChunkMod.MOD_ID + ".json");
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public int chunkUnloadDelay = 20 * 60 * 60;
+    public int chunkUnloadDistance = 64;
     public boolean ignoreServerRenderDistance = false;
 
     public void deserialize(JsonObject jsonObject) {
@@ -24,9 +24,9 @@ public class Configuration {
             HoldThatChunkMod.LOGGER.warn("[{}] Config was empty", HoldThatChunkMod.MOD_ID);
         } else {
             try {
-                chunkUnloadDelay = Math.min(jsonObject.get("chunkUnloadDelayInTicks").getAsInt(), 20 * 60 * 60 * 24);
+                chunkUnloadDistance = jsonObject.get("chunkUnloadDistance").getAsInt();
             } catch (Exception e) {
-                HoldThatChunkMod.LOGGER.warn("[{}] Could not parse chunkUnloadDelayInTicks option",
+                HoldThatChunkMod.LOGGER.warn("[{}] Could not parse chunkUnloadDistance option",
                         HoldThatChunkMod.MOD_ID);
             }
             try {
@@ -40,7 +40,7 @@ public class Configuration {
 
     public JsonObject serialize() {
         final var jsonObject = new JsonObject();
-        jsonObject.addProperty("chunkUnloadDelayInTicks", chunkUnloadDelay);
+        jsonObject.addProperty("chunkUnloadDistance", chunkUnloadDistance);
         jsonObject.addProperty("ignoreServerRenderDistance", ignoreServerRenderDistance);
         return jsonObject;
     }

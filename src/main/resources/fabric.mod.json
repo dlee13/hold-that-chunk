@@ -18,6 +18,9 @@
   "entrypoints": {
     "client": [
       "xyz.holocons.mc.holdthatchunk.HoldThatChunkMod"
+    ],
+    "modmenu": [
+      "xyz.holocons.mc.holdthatchunk.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -28,6 +31,11 @@
     "fabric": "*",
     "minecraft": ">=1.19",
     "java": ">=17"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "cloth-config2": "*",
+    "yet-another-config-lib": "*"
   },
   "breaks": {
     "farsight": "*"

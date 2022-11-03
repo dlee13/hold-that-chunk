@@ -1,3 +1,5 @@
-When the client receives a chunk unload packet, it will schedule the packet to be handled a configurable amount of time later. This is particularly useful for participating in ice boat racing or elytra course racing on highly active multiplayer servers where servers may struggle to keep up with sending chunk updates to all of the players.
+This Fabric loader mod prevents the Minecraft client from immediately unloading chunks when it receives chunk unload packets from the server. Instead, client chunks get periodically cleaned up based on distance away from the player.
 
-The player may revisit the chunks that have remained in memory without waiting for the server to resend them. This strategy of delaying chunk unloads rather than outright canceling them means that they will eventually get cleaned up. Thus, the client is less likely to run into high memory usage issues.
+This chunk unloading strategy is particularly useful for participating in ice boat racing or elytra course racing on highly active multiplayer servers where servers may struggle to keep up with sending chunk updates to all of the players. Typically, without this mod, a player would start to move into empty chunks when several players on the server are simultaneously traveling at high velocities. The issue is resolved since the cached chunks can be readily redrawn before the fresh chunk data comes in over the network.
+
+You may also increase your view distance by setting the `Ignore Server Render Distance` option in this mod's config.

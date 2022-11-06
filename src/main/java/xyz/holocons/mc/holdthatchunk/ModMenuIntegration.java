@@ -13,13 +13,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 public final class ModMenuIntegration implements ModMenuApi {
 
-    private static final Component titleComponent = Component.literal("Hold That Chunk");
-    private static final Component chunkUnloadDistanceComponent = Component.literal("Chunk Unload Distance");
-    private static final Component ignoreServerRenderDistanceComponent = Component
-            .literal("Ignore Server Render Distance");
+    private static final Component titleComponent = new TextComponent("Hold That Chunk");
+    private static final Component chunkUnloadDistanceComponent = new TextComponent("Chunk Unload Distance");
+    private static final Component ignoreServerRenderDistanceComponent = new TextComponent(
+            "Ignore Server Render Distance");
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
@@ -50,7 +51,7 @@ public final class ModMenuIntegration implements ModMenuApi {
                                     128)
                             .setDefaultValue(defaultConfig.chunkUnloadDistance)
                             .setSaveConsumer(value -> HoldThatChunkMod.CONFIG.chunkUnloadDistance = value)
-                            .setTextGetter(i -> Component.literal(String.format("%d chunks", i)))
+                            .setTextGetter(i -> new TextComponent(String.format("%d chunks", i)))
                             .build())
                     .addEntry(builder.entryBuilder()
                             .startBooleanToggle(
@@ -86,7 +87,7 @@ public final class ModMenuIntegration implements ModMenuApi {
                                             8,
                                             128,
                                             1,
-                                            i -> Component.literal(String.format("%d chunks", i))))
+                                            i -> new TextComponent(String.format("%d chunks", i))))
                                     .build())
                             .option(Option.createBuilder(boolean.class)
                                     .name(ignoreServerRenderDistanceComponent)

@@ -22,14 +22,14 @@ abstract class ClientPacketListenerMixin {
     @Redirect(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/game/ClientboundLoginPacket;chunkRadius()I"))
     private int getRenderDistanceOnLoginPacket(ClientboundLoginPacket packet) {
         return HoldThatChunkMod.CONFIG.ignoreServerRenderDistance
-                ? minecraft.options.renderDistance().get()
+                ? minecraft.options.renderDistance
                 : packet.chunkRadius();
     }
 
     @Redirect(method = "handleSetChunkCacheRadius", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/game/ClientboundSetChunkCacheRadiusPacket;getRadius()I"))
     private int getRenderDistanceOnChunkCacheRadiusPacket(ClientboundSetChunkCacheRadiusPacket packet) {
         return HoldThatChunkMod.CONFIG.ignoreServerRenderDistance
-                ? minecraft.options.renderDistance().get()
+                ? minecraft.options.renderDistance
                 : packet.getRadius();
     }
 }

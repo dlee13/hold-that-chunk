@@ -31,7 +31,7 @@ public class ChunkUnloader {
     private void onChunkLoad(ClientLevel world, LevelChunk chunk) {
         chunkUnloadSet.remove(chunk.getPos());
         final var currentPosition = minecraft.player.chunkPosition();
-        if (lastUnloadPosition.getChessboardDistance(currentPosition) < 8) {
+        if (lastUnloadPosition.getChessboardDistance(currentPosition) < 8 || listener.getLevel() == null) {
             return;
         }
         lastUnloadPosition = currentPosition;

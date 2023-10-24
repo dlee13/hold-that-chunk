@@ -25,7 +25,7 @@ public class ChunkUnloader {
 
     public void onChunkUnload(ClientboundForgetLevelChunkPacket packet) {
         // Called from Netty thread
-        minecraft.execute(() -> chunkUnloadSet.add(new ChunkPos(packet.getX(), packet.getZ())));
+        minecraft.execute(() -> chunkUnloadSet.add(packet.pos()));
     }
 
     private void onChunkLoad(ClientLevel world, LevelChunk chunk) {
@@ -39,7 +39,7 @@ public class ChunkUnloader {
         while (iterator.hasNext()) {
             final var position = iterator.next();
             if (position.getChessboardDistance(currentPosition) > HoldThatChunkMod.CONFIG.chunkUnloadDistance) {
-                listener.handleForgetLevelChunk(new ClientboundForgetLevelChunkPacket(position.x, position.z));
+                listener.handleForgetLevelChunk(new ClientboundForgetLevelChunkPacket(position));
                 iterator.remove();
             }
         }
